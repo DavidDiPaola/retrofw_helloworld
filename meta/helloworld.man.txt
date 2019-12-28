@@ -1,0 +1,8 @@
+RetroFW Hello World
+===================
+
+A white ball should appear on the screen.
+It can be moved using the d-pad.
+
+Press the sleep button to exit.
+

@@ -1,0 +1,11 @@
+Makefile.retrofw.config
+
+*.o
+
+helloworld.linux
+
+opkg/
+helloworld.opk
+
+.*.swp
+

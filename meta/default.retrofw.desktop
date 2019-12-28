@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Hello World
+Comment=RetroFW hello world
+Exec=helloworld.dge
+Terminal=false
+Type=Game
+StartupNotify=true
+Icon=icon
+Categories=games;
+X-OD-Manual=helloworld.man.txt
+Version=1.0
+

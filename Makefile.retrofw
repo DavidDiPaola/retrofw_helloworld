@@ -1,0 +1,65 @@
+# 2019 David DiPaola, licensed CC0 (public domain worldwide)
+
+_CHAINPREFIX ?= /opt/mipsel-linux-uclibc
+SYSROOT ?= $(_CHAINPREFIX)/usr/mipsel-buildroot-linux-uclibc/sysroot
+CROSS_COMPILE ?= $(_CHAINPREFIX)/usr/bin/mipsel-linux-
+DEVICE_IP ?= 169.254.1.1
+DEVICE_DIR ?= /home/retrofw/devel/
+ifneq ($(wildcard Makefile.retrofw.config),)
+	include Makefile.retrofw.config
+endif
+
+SDL_CONFIG = $(SYSROOT)/usr/bin/sdl-config
+include Makefile.common
+CFLAGS += -mhard-float -mips32 -mno-mips16
+CFLAGS += -DPLATFORM_LDK
+
+CC = $(CROSS_COMPILE)gcc
+GDB = $(CROSS_COMPILE)gdb
+
+OPK = helloworld.opk
+OPK_DIR = opkg
+OPK_METADATA = $(OPK_DIR)/default.retrofw.desktop
+OPK_ICON = $(OPK_DIR)/icon.png
+OPK_MAN = $(OPK_DIR)/helloworld.man.txt
+OPK_BIN = $(OPK_DIR)/helloworld.dge
+
+.PHONY: all
+all: $(OPK)
+
+.PHONY: upload
+upload: $(OPK)
+	$(shell curl --upload-file $< --ftp-create-dirs ftp://anonymous@$(DEVICE_IP)$(DEVICE_DIR))
+
+.PHONY: upload-bin
+upload-bin: $(OPK_BIN)
+	$(shell curl --upload-file $< --ftp-create-dirs ftp://anonymous@$(DEVICE_IP)$(DEVICE_DIR))
+
+.PHONY: clean
+clean:
+	rm -f $(OBJ)
+	rm -f $(OPK)
+	rm -f $(OPK_BIN)
+	rm -rf $(OPK_DIR)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OPK_DIR):
+	mkdir -p $(OPK_DIR)
+
+$(OPK_METADATA): meta/default.retrofw.desktop $(OPK_DIR)
+	cp $< $@
+
+$(OPK_ICON): meta/icon.png $(OPK_DIR)
+	cp $< $@
+
+$(OPK_MAN): meta/helloworld.man.txt $(OPK_DIR)
+	cp $< $@
+
+$(OPK_BIN): $(OPK_DIR) $(OBJ)
+	$(CC) $(LDFLAGS) $(OBJ) -o $@ $(LDFLAGS_LIB)
+
+$(OPK): $(OPK_DIR) $(OPK_METADATA) $(OPK_ICON) $(OPK_MAN) $(OPK_BIN)
+	mksquashfs $(OPK_DIR) $@ -noappend -no-xattrs
+

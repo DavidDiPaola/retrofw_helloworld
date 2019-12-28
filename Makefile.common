@@ -1,0 +1,18 @@
+# 2019 David DiPaola, licensed CC0 (public domain worldwide)
+
+# Inputs:
+# 	SDL_CONFIG - location of sdl-config
+
+SRC_C = src/main.c
+OBJ = $(SRC_C:.c=.o)
+
+CFLAGS = \
+	-std=c99 -fwrapv -Wall -Wextra \
+	-O2 \
+	$(shell $(SDL_CONFIG) --cflags) \
+	-g
+LDFLAGS = \
+	-O1
+LDFLAGS_LIB = \
+	$(shell $(SDL_CONFIG) --libs)
+

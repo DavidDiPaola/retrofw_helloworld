@@ -1,0 +1,22 @@
+# 2019 David DiPaola, licensed CC0 (public domain worldwide)
+
+SDL_CONFIG = sdl-config
+include Makefile.common
+CFLAGS += -DPLATFORM_LINUX
+
+BIN = helloworld.linux
+
+.PHONY: all
+all: $(BIN)
+
+.PHONY: clean
+clean:
+	rm -f $(OBJ)
+	rm -f $(BIN)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BIN): $(OBJ)
+	$(CC) $(LDFLAGS) $^ -o $@ $(LDFLAGS_LIB)
+
