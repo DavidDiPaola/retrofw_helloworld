@@ -1,6 +1,7 @@
 # retrofw_helloworld
 A simple program which runs on Linux and RetroFW.
 
+Main repository: https://gitlab.com/DavidDiPaola/retrofw_helloworld
 
 ## Building
 
